@@ -94,36 +94,4 @@ pip install -r requirements.txt
 python run_study.py
 ```
 
-## Where this is weaker than a real study
 
-This models two fixed snapshots in time, not a full year of hourly data —
-a proper hosting capacity study would sweep an entire annual load and
-irradiance profile rather than two representative points. I chose two
-snapshots deliberately, to keep the undervoltage and overvoltage stories
-separate and readable, rather than blending them into one noisy time
-series.
-
-It's also strictly a steady-state voltage study. pandapower's power flow
-solver doesn't touch frequency response, inverter control dynamics, or
-rotor behavior — "stability" here means bus voltage magnitude, nothing
-more. A real frequency-stability study needs a dynamic simulation tool
-(DIgSILENT PowerFactory, PSS/E, or PyPSA's time-domain extensions). I'd
-originally planned to use PyPSA for this project, but pandapower's handling
-of radial/unbalanced distribution feeders turned out to be a better fit for
-what I was actually trying to show.
-
-The network parameters — line impedances, transformer rating, load sizes —
-are realistic but synthetic, not pulled from an actual DISCOM feeder. The
-qualitative conclusions (siting matters, reverse flow shows up before
-voltage does, weak feeders sag at peak regardless of solar) should hold up
-generally; the exact percentages are specific to this particular feeder and
-would shift with a different conductor gauge or load mix. PV is also
-modeled at unity power factor with no reactive power support from
-inverters — a real mitigation study would test Volt-VAR control before
-recommending network upgrades.
-
-## CV bullet
-
-**Power Flow & Renewable Integration Study on a Distribution Feeder** (gridpen) — Self Project in Power Systems Engineering — Github
-- Built a synthetic 11 kV radial distribution feeder in pandapower and ran Newton-Raphson AC power flow to identify a structural peak-load undervoltage condition (0.933 pu, below the 0.94 pu statutory floor) independent of any renewable generation.
-- Modeled a rooftop-solar penetration sweep (0-200% of feeder peak load) under two siting strategies, showing distributed PV placement roughly doubles safe hosting capacity (190% vs. 100% penetration before breaching the 1.06 pu statutory voltage ceiling) and that reverse power flow through the substation transformer begins well before any voltage limit violation (~50% penetration).
